@@ -3,7 +3,7 @@
 import argparse
 from collections import Counter
 from dataclasses import dataclass
-from typing import Dict, List, Optional
+from typing import Dict, Iterable, List, Optional
 
 
 @dataclass
@@ -12,7 +12,7 @@ class Trie:
     children: Dict[str, "Trie"]
 
 
-def trie_from_list(words: List[str]) -> Trie:
+def trie_from_list(words: Iterable[str]) -> Trie:
     out = Trie(None, dict())
     for word in words:
         current = out
@@ -44,7 +44,7 @@ def remove_bag(bag: Dict[str, int], e: str) -> Dict[str, int]:
     return out
 
 
-def find_trie(words: List[str], letters: List[str]) -> List[str]:
+def find_trie(words: Iterable[str], letters: Iterable[str]) -> List[str]:
     def rec(trie: Trie, chosen: str, remaining: Dict[str, int]) -> List[str]:
         """Recursively search for words in a trie.
 
