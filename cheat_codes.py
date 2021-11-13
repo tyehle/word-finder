@@ -85,13 +85,18 @@ def find_trie(words: Iterable[str], letters: Iterable[str]) -> List[str]:
 
 
 def parse_args() -> argparse.Namespace:
-    p = argparse.ArgumentParser("Word Finder")
+    p = argparse.ArgumentParser()
 
-    p.add_argument("--word-list", default="words.txt", metavar="PATH")
+    p.add_argument(
+        "--word-list",
+        default="words.txt",
+        metavar="PATH",
+        help="Alternative path to a word list.",
+    )
 
     p.add_argument(
         "parts",
-        nargs="+",
+        nargs="*",
         type=str,
         metavar="S",
         help=(
