@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
-from collections import Counter
+import collections
 from dataclasses import dataclass
 from typing import Dict, Iterable, List, Optional
 
@@ -69,18 +69,19 @@ def find_trie(words: Iterable[str], letters: Iterable[str]) -> List[str]:
             else:
                 return []
 
-        if not remaining:
-            return [trie.word] if trie.word is not None else []
-
         out = []
+
         if trie.word is not None:
             out.append(trie.word)
-        for letters in remaining:
-            out.extend(rec(trie, letters, remove_bag(remaining, letters)))
+
+        if remaining:
+            for letters in remaining:
+                out.extend(rec(trie, letters, remove_bag(remaining, letters)))
+
         return out
 
     trie = trie_from_list(words)
-    return rec(trie, "", dict(Counter(letters)))
+    return rec(trie, "", dict(collections.Counter(letters)))
 
 
 def parse_args() -> argparse.Namespace:
