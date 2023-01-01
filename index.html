@@ -24,7 +24,7 @@
       function go() {
         let output = document.getElementById("output");
 
-        let letters = input.value.split(/\s+/);
+        let letters = input.value.toLowerCase().split(/\s+/);
 
         let result_set = new Set(find_words(words, letters));
         let result = Array.from(result_set);
