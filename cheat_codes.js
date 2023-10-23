@@ -1,4 +1,5 @@
 function trie_from_list(words) {
+    // do you even trie bruh?
     let out = {word: null, children: new Map()};
     for (let word of words) {
         let current = out;
@@ -97,5 +98,6 @@ function find_words(words, letters) {
         }
     }
 
+    result.reverse();
     return result;
 }
