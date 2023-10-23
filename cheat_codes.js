@@ -42,38 +42,60 @@ function bag_from_list(elements) {
 
 
 function find_words(words, letters) {
-    function rec(trie, chosen, remaining) {
+    // words is a list of valid words
+    // letters is a list of strings
+    //     (they don't have to be length one)
+    //     (the letter . is treated as a wildcard)
+
+    const stack = [];
+    const result = [];
+    const trie = trie_from_list(words);
+    const initialNode = {
+        node: trie,
+        chosen: "",
+        remaining: bag_from_list(letters)
+    };
+
+    stack.push(initialNode);
+
+    while (stack.length > 0) {
+        const { node, chosen, remaining } = stack.pop();
+
         if (chosen) {
+            // we have chosen some letters. Traverse the trie
             if (chosen[0] === ".") {
-                let result = [];
-                for (let child of trie.children.values()) {
-                    for (let word of rec(child, chosen.slice(1), remaining)) {
-                        result.push(word);
-                    }
+                for (const child of node.children.values()) {
+                    stack.push({
+                        node: child,
+                        chosen: chosen.slice(1),
+                        remaining
+                    });
                 }
-                return result;
-            } else if (trie.children.has(chosen[0])) {
-                return rec(trie.children.get(chosen[0]), chosen.slice(1), remaining);
-            } else {
-                return [];
+            } else if (node.children.has(chosen[0])) {
+                stack.push({
+                    node: node.children.get(chosen[0]),
+                    chosen: chosen.slice(1),
+                    remaining
+                });
+            }
+            continue;
+        }
+
+        if (node.word !== null) {
+            result.push(node.word);
+        }
+
+        if (remaining.size !== 0) {
+            // there are still remaining letters, choose one
+            for (const letters of remaining.keys()) {
+                stack.push({
+                    node: node,
+                    chosen: letters,
+                    remaining: remove_bag(remaining, letters)
+                });
             }
         }
-
-        let out = [];
-
-        if (trie.word !== null) {
-            out.push(trie.word);
-        }
-
-        if(remaining.size !== 0) {
-            for (let letters of remaining.keys()) {
-                out.push(...rec(trie, letters, remove_bag(remaining, letters)));
-            }
-        }
-
-        return out;
     }
 
-    let trie = trie_from_list(words);
-    return rec(trie, "", bag_from_list(letters));
+    return result;
 }
